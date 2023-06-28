@@ -1,8 +1,8 @@
-import ChatContainer from './chatContainer.tsx'
+import ChatWindow from './chatWindow.tsx'
 
 function App() {
   return (
-    <ChatContainer />
+    <ChatWindow />
   )
 }
 
