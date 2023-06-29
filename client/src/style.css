@@ -20,7 +20,7 @@ body::-webkit-scrollbar {
 }
 
 #Conversation {
-    overflow: auto;
+    overflow-x: hidden;
 }
 
 .Sent {
