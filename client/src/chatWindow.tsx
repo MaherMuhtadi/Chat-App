@@ -23,14 +23,20 @@ function Message({text, self}: {text: string, self: boolean}) {
  * Handles messages being sent and received and updates the conversation.
  */
 function ChatWindow() {
-    const [text, setText] = useState("")
+    const [inputText, setInputText] = useState("")
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setText(e.target.value)
+        setInputText(e.target.value)
+    }
+    const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            send();
+        }
     }
     const [conversation, updateConversation] = useState<JSX.Element[]>([])
     const send = () => {
-        if (text.length > 0) {
-            updateConversation(value => [...value, <Message text={ text } self={ true } />])
+        if (inputText.length > 0) {
+            updateConversation(value => [...value, <Message text={ inputText } self={ true } />])
+            setInputText("")
         }
     }
 
@@ -43,7 +49,13 @@ function ChatWindow() {
             </div>
 
             <div id="MessageInput">
-                <input type="text" placeholder="Enter your message" onChange={ handleInputChange }></input>
+                <input 
+                    type="text" 
+                    placeholder="Enter your message" 
+                    value={ inputText } 
+                    onChange={ handleInputChange } 
+                    onKeyDown={ handleEnter }
+                />
                 <button onClick={ send }>📤</button>
             </div>
         </div>
