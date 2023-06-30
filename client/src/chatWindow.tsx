@@ -27,13 +27,9 @@ function ChatWindow() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(e.target.value)
     }
-    const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            send();
-        }
-    }
     const [conversation, updateConversation] = useState<JSX.Element[]>([])
-    const send = () => {
+    const send = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault() // Prevent form submission
         if (inputText.length > 0) {
             updateConversation(value => [...value, <Message text={ inputText } self={ true } />])
             setInputText("")
@@ -48,16 +44,15 @@ function ChatWindow() {
                 { conversation }
             </div>
 
-            <div id="MessageInput">
+            <form id="MessageInput" onSubmit={ send }>
                 <input 
                     type="text" 
                     placeholder="Enter your message" 
                     value={ inputText } 
-                    onChange={ handleInputChange } 
-                    onKeyDown={ handleEnter }
+                    onChange={ handleInputChange }
                 />
-                <button onClick={ send }>📤</button>
-            </div>
+                <button type="submit">📤</button>
+            </form>
         </div>
     )
 }
