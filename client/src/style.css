@@ -29,11 +29,12 @@ body::-webkit-scrollbar {
 }
 
 .Message {
+    width: -moz-fit-content; /* For Firefox only */
     width: fit-content;
     max-width: 75%;
     padding: 0.5rem;
     border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0rem 0.5rem 0rem;
     overflow-wrap: break-word;
 }
 
@@ -63,4 +64,8 @@ input, button {
 
 input {
     width: 100%;
+}
+
+input:focus {
+    outline: none;
 }
