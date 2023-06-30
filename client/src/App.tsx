@@ -1,9 +1,7 @@
-import ChatWindow from './chatWindow.tsx'
+import ChatWindow from "./chatWindow.tsx";
 
 function App() {
-  return (
-    <ChatWindow />
-  )
+    return <ChatWindow />;
 }
 
-export default App
+export default App;
