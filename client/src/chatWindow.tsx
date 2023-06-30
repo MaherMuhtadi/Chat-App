@@ -11,9 +11,9 @@ function Message({text, self}: {text: string, self: boolean}) {
 
     return (
         <div className={ sender }>
-            <div className="Message">
+            <p className="Message">
                 { text }
-            </div>
+            </p>
         </div>
     )
 }
