@@ -40,11 +40,13 @@ body::-webkit-scrollbar {
 
 .Sent > .Message {
     color: white;
+    border-bottom-right-radius: 0rem;
     background-color: rgb(35, 97, 219);
 }
 
 .Received > .Message {
     color: black;
+    border-bottom-left-radius: 0rem;
     background-color: rgb(212, 213, 216);
 }
 

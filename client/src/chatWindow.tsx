@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ClientSocket } from "../../server/shared/types";
 
 /**
  * Renders a chat message with the specified text and sender information.
@@ -20,22 +21,36 @@ function Message({ text, self }: { text: string; self: boolean }) {
  * Renders the component containing a message conversation.
  * Handles messages being sent and received and updates the conversation.
  */
-function ChatWindow() {
+function ChatWindow({ socket }: { socket: ClientSocket }) {
     const [inputText, setInputText] = useState("");
+    const [conversation, updateConversation] = useState<JSX.Element[]>([]);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(e.target.value);
     };
-    const [conversation, updateConversation] = useState<JSX.Element[]>([]);
+
     const send = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault(); // Prevents form submission
         if (inputText.length > 0) {
-            updateConversation((value) => [
-                ...value,
-                <Message text={inputText} self={true} />,
-            ]);
+            socket.emit("message to server", inputText);
             setInputText("");
         }
     };
+
+    const receive = (text: string, self: boolean) => {
+        updateConversation((value) => [
+            ...value,
+            <Message text={text} self={self} />,
+        ]);
+    };
+
+    // A listener, receive, is set up for 'message from server' event once when the chat window is rendered.
+    useEffect(() => {
+        socket.on("message from server", receive);
+        return () => {
+            socket.off("message from server", receive);
+        }; // The cleanup function removes the event listener when the component is unmounted.
+    }, [socket]); // The effect depends on the socket and is re-run when it changes.
 
     return (
         <div id="ChatWindow">
