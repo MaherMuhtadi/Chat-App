@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ClientSocket } from "../../server/shared/types";
 
 /**
@@ -24,6 +24,7 @@ function Message({ text, self }: { text: string; self: boolean }) {
 function ChatWindow({ socket }: { socket: ClientSocket }) {
     const [inputText, setInputText] = useState("");
     const [conversation, updateConversation] = useState<JSX.Element[]>([]);
+    const conversationRef = useRef<HTMLDivElement>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(e.target.value);
@@ -52,11 +53,21 @@ function ChatWindow({ socket }: { socket: ClientSocket }) {
         }; // The cleanup function removes the event listener when the component is unmounted.
     }, [socket]); // The effect depends on the socket and is re-run when it changes.
 
+    //Scrolls the conversation to the bottom when it is updated.
+    useEffect(() => {
+        if (conversationRef.current) {
+            conversationRef.current.scrollTop =
+                conversationRef.current.scrollHeight;
+        }
+    }, [conversation]);
+
     return (
         <div id="ChatWindow">
             <h2>Chat Window</h2>
 
-            <div id="Conversation">{conversation}</div>
+            <div id="Conversation" ref={conversationRef}>
+                {conversation}
+            </div>
 
             <form id="MessageInput" onSubmit={send}>
                 <input
@@ -65,7 +76,9 @@ function ChatWindow({ socket }: { socket: ClientSocket }) {
                     value={inputText}
                     onChange={handleInputChange}
                 />
-                <button type="submit">📤</button>
+                <button type="submit">
+                    <img src="send-icon.svg" alt="Send Button" />
+                </button>
             </form>
         </div>
     );
