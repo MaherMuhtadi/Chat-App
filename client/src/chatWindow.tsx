@@ -24,6 +24,7 @@ function Message({ text, self }: { text: string; self: boolean }) {
 function ChatWindow({ socket }: { socket: ClientSocket }) {
     const [inputText, setInputText] = useState("");
     const [conversation, updateConversation] = useState<JSX.Element[]>([]);
+    const [autoScroll, setAutoScroll] = useState(true);
     const conversationRef = useRef<HTMLDivElement>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +46,8 @@ function ChatWindow({ socket }: { socket: ClientSocket }) {
         ]);
     };
 
-    // A listener, receive, is set up for 'message from server' event once when the chat window is rendered.
+    // A 'message from server' event listener, receive, is added when the chat window is mounted
+    // or the socket changes.
     useEffect(() => {
         socket.on("message from server", receive);
         return () => {
@@ -53,11 +55,35 @@ function ChatWindow({ socket }: { socket: ClientSocket }) {
         }; // The cleanup function removes the event listener when the component is unmounted.
     }, [socket]); // The effect depends on the socket and is re-run when it changes.
 
-    //Scrolls the conversation to the bottom when it is updated.
+    // Adds a scroll event listener to the conversation div when the chat window is mounted.
     useEffect(() => {
-        if (conversationRef.current) {
-            conversationRef.current.scrollTop =
-                conversationRef.current.scrollHeight;
+        const conversationDiv = conversationRef.current;
+
+        // Sets autoScroll to true if the conversation is scrolled to the bottom and false otherwise.
+        const handleScroll = () => {
+            if (conversationDiv) {
+                setAutoScroll(
+                    conversationDiv.scrollTop + conversationDiv.clientHeight >=
+                        conversationDiv.scrollHeight
+                );
+            }
+        };
+
+        if (conversationDiv) {
+            conversationDiv.addEventListener("scroll", handleScroll);
+        }
+        return () => {
+            if (conversationDiv) {
+                conversationDiv.removeEventListener("scroll", handleScroll);
+            }
+        };
+    }, []);
+
+    //Auto scrolls the conversation to the bottom when it is updated.
+    useEffect(() => {
+        const conversationDiv = conversationRef.current;
+        if (conversationDiv && autoScroll) {
+            conversationDiv.scrollTop = conversationDiv.scrollHeight;
         }
     }, [conversation]);
 
