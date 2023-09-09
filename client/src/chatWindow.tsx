@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { ClientSocket } from "../../server/shared/types";
 
 /**
- * Renders a chat message with the specified text and sender information.
+ * Renders a chat message with the specified text and source information.
  * @param {Object} props - The component props.
  * @param {string} props.text - The content of the message.
  * @param {boolean} props.self - Indicates whether the message is from the user themselves.
  */
 function Message({ text, self }: { text: string; self: boolean }) {
-    const sender = self ? "Sent" : "Received";
+    const source = self ? "Sent" : "Received";
 
     return (
-        <div className={sender}>
+        <div className={source}>
             <p className="Message">{text}</p>
         </div>
     );
